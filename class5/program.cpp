@@ -2,32 +2,35 @@
 #include <stdlib.h>
 #include <string.h>
 
-int transferencia(int saida){	
-	if(saida <= 0){
+int transfer(int sum){	
+	if(sum <= 0){
 		return 0;
 	}
-	else if(saida > 0){
+	else if(sum > 0){
 		return 1; 
 	}
 }
 
 struct Values{
 	
-	int entradas[3];
+	// inputs[0] to [2] are the input values.
+	// input[3] is the viés.
+
+	int inputs[3];
 	int expected;
-	int ponderado;
-	int saida;
+	int sum;
+	int output;
 };
 
 int main(){
-	int pesos[3];
+	int weight[3];
 	struct Values values[4]; 
 	int x = 0;
 
 	// pelé
-	values[0].entradas[0] = 0;
-	values[0].entradas[1] = 0;
-	values[0].entradas[2] = 1;
+	values[0].inputs[0] = 0;
+	values[0].inputs[1] = 0;
+	values[0].inputs[2] = 1;
 
 	
 	values[0].expected = 0;
@@ -35,44 +38,45 @@ int main(){
 
 	// Zico
 
-	values[1].entradas[0] = 0;
-	values[1].entradas[1] = 1;
-	values[1].entradas[2] = 1;
+	values[1].inputs[0] = 0;
+	values[1].inputs[1] = 1;
+	values[1].inputs[2] = 1;
 
 	values[1].expected = 0;
 	
 	// Senna 
 
-	values[2].entradas[0] = 1;
-	values[2].entradas[1] = 0;
-	values[2].entradas[2] = 1;
+	values[2].inputs[0] = 1;
+	values[2].inputs[1] = 0;
+	values[2].inputs[2] = 1;
 
 	values[2].expected = 1;
 
 	// Piquet
 
-	values[3].entradas[0] = 1;
-	values[3].entradas[1] = 1;
-	values[3].entradas[2] = 1;
+	values[3].inputs[0] = 1;
+	values[3].inputs[1] = 1;
+	values[3].inputs[2] = 1;
 
 	values[3].expected = 1;
 
-	//pesos
+	//weight
 
-	pesos[0] = -1; 
-	pesos[1] = -1; 
-	pesos[2] = 1;
+	weight[0] = -1; 
+	weight[1] = -1; 
+	weight[2] = 1;
 
 
-	while(values[0].saida != values[0].expected || values[1].saida != values[1].expected || values[2].saida != values[2].expected || values[3].saida != values[3].expected){
 
-		values[x].ponderado = (pesos[0] * values[x].entradas[0]) + (pesos[1] * values[x].entradas[1]) + (pesos[2] * values[x].entradas[2]);
-		values[x].saida = transferencia(values[x].ponderado);
+	while(values[0].output != values[0].expected || values[1].output != values[1].expected || values[2].output != values[2].expected || values[3].output != values[3].expected){
 
-		if(values[x].saida != values[x].expected){
+		values[x].sum = (weight[0] * values[x].inputs[0]) + (weight[1] * values[x].inputs[1]) + (weight[2] * values[x].inputs[2]);
+		values[x].output = transfer(values[x].sum);
 
-			for(int y=0; y < sizeof(pesos); y++){
-				pesos[y] = pesos[y] + 1 * (values[x].expected - values[x].saida) * values[x].entradas[y];
+		if(values[x].output != values[x].expected){
+
+			for(int y=0; y < sizeof(weight); y++){
+				weight[y] = weight[y] + 1 * (values[x].expected - values[x].output) * values[x].inputs[y];
 			}
 
 		}
@@ -82,12 +86,13 @@ int main(){
 		}else{
 			x++;
 		} 
-		printf("* \n");
 	}
 
 	int op;
-
 	do{
+		// The neuron will respond based on the input and its training. 
+		// Pelé and Zico are soccer players (0) , Senna and Piquet are F1 racers(1)
+		
 		printf("\n informe qual deseja ver: \n");
 		printf("1 - pelé \n");
 		printf("2 - Zico \n");
@@ -97,20 +102,21 @@ int main(){
 		
 
 		scanf("%d", &op);
+
 		fflush(stdin);
 
 		switch(op){
 			case 1: 
-				printf("saida : %d \n", values[0].saida);
+				printf("output : %d \n", values[0].output);
 				break;
 			case 2:
-				printf("saida : %d \n", values[1].saida);
+				printf("output : %d \n", values[1].output);
 				break;
 			case 3:
-				printf("saida : %d \n", values[2].saida);
+				printf("output : %d \n", values[2].output);
 				break;
 			case 4:
-				printf("saida : %d \n", values[3].saida);
+				printf("output : %d \n", values[3].output);
 				break;
 		}
 	}while(op != 5);
